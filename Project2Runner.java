@@ -11,7 +11,8 @@ public class Project2Runner {
      * The purpose of this program is to recreate the game of Pong in the Java language.
      * Pong is a game that has 2 paddles on either side of the screen and needs
      * two people to play. The goal is to bounce the ball onto the opposite player's side,
-     * getting points. To achieve this, the program will need many classes. The Paddle class
+     * getting points. To achieve this, the program will need many classes. The point class is 
+     * a simple (x, y) coordinate that simplifies the position of each element. The Paddle class
      * holds the attributes of the paddles like position and length. The Ball class contains 
      * the attributes of the ball. The Ball and Paddle class need to have nested shape classes 
      * like Rectangle Circle to display each efficiently and The Physics class handles
