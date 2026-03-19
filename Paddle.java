@@ -24,6 +24,9 @@ public class Paddle extends JPanel {
     public int getPaddleHeight() {
         return height;
     }
+    public void setPosition(Point position) {
+        this.position = new Point(position.getX(), position.getY());
+    }
 
     public void move(int dy) {
         position.displaceY(dy);

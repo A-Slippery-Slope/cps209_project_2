@@ -46,7 +46,7 @@ public class Project2Runner {
      * and the line numbers that these listeners are defined in.
      */
 
-    public static void main(String[] args) {
+     public static void main(String[] args) {
         new Display();
     }
 }

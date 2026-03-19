@@ -1,26 +1,28 @@
 public class Physics {
     private Paddle leftPaddle, rightPaddle;
     private Ball ball;
-    private int ballSpeedX = 5, ballSpeedY = 5, paddleSpeed = 5;
+    private int ballSpeedX, ballSpeedY, leftPaddleSpeed, rightPaddleSpeed;
     
     public Physics(Paddle leftPaddle, Paddle rightPaddle, Ball ball) {
         this.leftPaddle = leftPaddle;
         this.rightPaddle = rightPaddle;
         this.ball = ball;
+
+        ballSpeedX = 5;
+        ballSpeedY = 5;
+        leftPaddleSpeed = 0;
+        rightPaddleSpeed = 0;
     }
 
     public void update() {
-        if (checkPaddleCollision()) {
-            ballSpeedX = -ballSpeedX;
-            ballSpeedY = -ballSpeedY;
-        }
+        if (checkPaddleCollision()) { ballSpeedX = -ballSpeedX; }
         if (checkVerticalCollision()) { ballSpeedY = -ballSpeedY; }
-        if (checkHorizontalCollision()) {
-
-        }
+        if (checkHorizontalCollision()) { reset(); }
 
         ball.moveX(ballSpeedX);
         ball.moveY(ballSpeedY);
+        leftPaddle.move(leftPaddleSpeed);
+        rightPaddle.move(rightPaddleSpeed);
     }
 
     private boolean checkPaddleCollision() {
@@ -38,19 +40,35 @@ public class Physics {
         int rightPaddleWidth = rightPaddle.getPaddleWidth();
         int rightPaddleHeight = rightPaddle.getPaddleHeight();
 
-        return (ballX < leftPaddleX + leftPaddleWidth && ballX + ballDiameter > leftPaddleX &&
-                ballY < leftPaddleY + leftPaddleHeight && ballY + ballDiameter > leftPaddleY) ||
-               (ballX < rightPaddleX + rightPaddleWidth && ballX + ballDiameter > rightPaddleX &&
-                ballY < rightPaddleY + rightPaddleHeight && ballY + ballDiameter > rightPaddleY);
+        return (ballX <= leftPaddleX + leftPaddleWidth && ballX + ballDiameter >= leftPaddleX &&
+                ballY <= leftPaddleY + leftPaddleHeight && ballY + ballDiameter >= leftPaddleY) ||
+               (ballX <= rightPaddleX + rightPaddleWidth && ballX + ballDiameter >= rightPaddleX &&
+                ballY <= rightPaddleY + rightPaddleHeight && ballY + ballDiameter >= rightPaddleY);
     }
     private boolean checkVerticalCollision() {
         int ballY = ball.getPosition().getY();
         int ballDiameter = ball.getDiameter();
-        return ballY <= 0 || ballY + ballDiameter >= Display.HEIGHT;
+        return ballY <= 0 || ballY + ballDiameter >= Display.getFrameHeight();
     }
     private boolean checkHorizontalCollision() {
         int ballX = ball.getPosition().getX();
         int ballDiameter = ball.getDiameter();
-        return ballX <= 0 || ballX + ballDiameter >= Display.WIDTH;
+        return ballX <= 0 || ballX + ballDiameter >= Display.getFrameWidth();
+    }
+
+    public void setLeftPaddleSpeed(int speed) {
+        leftPaddleSpeed = speed;
+    }
+    public void setRightPaddleSpeed(int speed) {
+        rightPaddleSpeed = speed;
+    }
+
+    private void reset() {
+        ball.setPosition(Display.getBallDefault());
+        ballSpeedX = 5;
+        ballSpeedY = 5;
+
+        leftPaddle.setPosition(Display.getLeftPaddleDefault());
+        rightPaddle.setPosition(Display.getRightPaddleDefault());
     }
 }

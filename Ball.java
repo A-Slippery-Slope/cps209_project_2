@@ -20,6 +20,9 @@ public class Ball extends JPanel {
     public int getDiameter() {
         return diameter;
     }
+    public void setPosition(Point position) {
+        this.position = new Point(position.getX(), position.getY());
+    }
 
     public void moveX(int dx) {
         position.displaceX(dx);
