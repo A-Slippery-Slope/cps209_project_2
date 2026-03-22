@@ -8,19 +8,32 @@ public class Physics {
         this.rightPaddle = rightPaddle;
         this.ball = ball;
 
-        ballSpeedX = 5;
-        ballSpeedY = 5;
+        ballSpeedX = 10;
+        ballSpeedY = 10;
         leftPaddleSpeed = 0;
         rightPaddleSpeed = 0;
     }
 
     public void update() {
-        if (checkPaddleCollision()) { ballSpeedX = -ballSpeedX; }
+        if (checkPaddleCollision()) { 
+            ballSpeedX = -ballSpeedX;
+
+            Point ballPos = ball.getPosition();
+            int leftPaddleX = leftPaddle.getPosition().getX(), leftPaddleWidth = leftPaddle.getPaddleWidth();
+            int rightPaddleX = rightPaddle.getPosition().getX();
+            if (ballPos.getX() < Display.getFrameWidth() / 2) {
+                ball.setPosition(new Point(leftPaddleX + leftPaddleWidth, ballPos.getY()));
+            } 
+            else {
+                ball.setPosition(new Point(rightPaddleX - ball.getDiameter(), ballPos.getY()));
+            }
+        }
         if (checkVerticalCollision()) { ballSpeedY = -ballSpeedY; }
         if (checkHorizontalCollision()) { reset(); }
 
         ball.moveX(ballSpeedX);
         ball.moveY(ballSpeedY);
+
         leftPaddle.move(leftPaddleSpeed);
         rightPaddle.move(rightPaddleSpeed);
     }
@@ -65,8 +78,8 @@ public class Physics {
 
     private void reset() {
         ball.setPosition(Display.getBallDefault());
-        ballSpeedX = 5;
-        ballSpeedY = 5;
+        ballSpeedX = 10;
+        ballSpeedY = 10;
 
         leftPaddle.setPosition(Display.getLeftPaddleDefault());
         rightPaddle.setPosition(Display.getRightPaddleDefault());

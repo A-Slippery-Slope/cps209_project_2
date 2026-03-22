@@ -29,7 +29,9 @@ public class Paddle extends JPanel {
     }
 
     public void move(int dy) {
-        position.displaceY(dy);
+        if (position.getY() + dy >= 0 && position.getY() + dy <= Display.getFrameHeight() - height) {
+            position.displaceY(dy);
+        }
     }
 
     @Override

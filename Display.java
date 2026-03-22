@@ -24,6 +24,7 @@ public class Display extends JPanel {
         frame = new JFrame("Pong Game");
         frame.setExtendedState(frame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setUndecorated(true);
         setBackground(Color.BLACK);
         frame.add(this);
         frame.setVisible(true);
@@ -35,8 +36,8 @@ public class Display extends JPanel {
         rightPaddleDefault = new Point(width - 70, height / 2 - 50);
         ballDefault = new Point(width / 2 - 10, height / 2 - 10);
 
-        leftPaddle = new Paddle(new Point(leftPaddleDefault.getX(), leftPaddleDefault.getY()), 10, 100);
-        rightPaddle = new Paddle(new Point(rightPaddleDefault.getX(), rightPaddleDefault.getY()), 10, 100);
+        leftPaddle = new Paddle(new Point(leftPaddleDefault.getX(), leftPaddleDefault.getY()), 12, 150);
+        rightPaddle = new Paddle(new Point(rightPaddleDefault.getX(), rightPaddleDefault.getY()), 12, 150);
         ball = new Ball(new Point(ballDefault.getX(), ballDefault.getY()), 20);
         gameLoop = new GameLoop(new Physics(leftPaddle, rightPaddle, ball));
 
@@ -98,10 +99,11 @@ public class Display extends JPanel {
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
             switch (key) {
-                case KeyEvent.VK_W -> physics.setLeftPaddleSpeed(-5);
-                case KeyEvent.VK_S -> physics.setLeftPaddleSpeed(5);
-                case KeyEvent.VK_UP -> physics.setRightPaddleSpeed(-5);
-                case KeyEvent.VK_DOWN -> physics.setRightPaddleSpeed(5);
+                case KeyEvent.VK_W -> { if (leftPaddle.getPosition().getY() > 0) physics.setLeftPaddleSpeed(-10); }
+                case KeyEvent.VK_S -> { if (leftPaddle.getPosition().getY() < height - leftPaddle.getHeight()) physics.setLeftPaddleSpeed(10); }
+                case KeyEvent.VK_UP -> { if (rightPaddle.getPosition().getY() > 0) physics.setRightPaddleSpeed(-10); }
+                case KeyEvent.VK_DOWN -> { if (rightPaddle.getPosition().getY() < height - rightPaddle.getHeight()) physics.setRightPaddleSpeed(10); }
+                case KeyEvent.VK_ESCAPE -> System.exit(0);
             }
         }
         @Override
