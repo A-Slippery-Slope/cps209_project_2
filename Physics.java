@@ -3,6 +3,7 @@ public class Physics {
     private Ball ball;
     private int ballSpeedX, ballSpeedY, leftPaddleSpeed, rightPaddleSpeed;
     
+    // Constructor for the Physics class, initializes the left and right paddles, the ball, and their speeds
     public Physics(Paddle leftPaddle, Paddle rightPaddle, Ball ball) {
         this.leftPaddle = leftPaddle;
         this.rightPaddle = rightPaddle;
@@ -14,6 +15,11 @@ public class Physics {
         rightPaddleSpeed = 0;
     }
 
+    /* 
+        Updates the positions of the paddles and the ball based on their speeds and checks for collisions 
+        Ensures that the ball bounces off the paddles (and doesn't get stuck) and the top and bottom of the screen, 
+        and resets the game if the ball goes off the left or right side of the screen
+    */
     public void update() {
         if (checkPaddleCollision()) { 
             ballSpeedX = -ballSpeedX;
@@ -38,6 +44,7 @@ public class Physics {
         rightPaddle.move(rightPaddleSpeed);
     }
 
+    // Returns a boolean for each collision check, ensuring the ball is within bounds
     private boolean checkPaddleCollision() {
         int ballX = ball.getPosition().getX();
         int ballY = ball.getPosition().getY();
@@ -69,6 +76,7 @@ public class Physics {
         return ballX <= 0 || ballX + ballDiameter >= Display.getFrameWidth();
     }
 
+    // Setters for the paddle speeds
     public void setLeftPaddleSpeed(int speed) {
         leftPaddleSpeed = speed;
     }
@@ -76,12 +84,19 @@ public class Physics {
         rightPaddleSpeed = speed;
     }
 
+    // Internal method to reset the position of the ball and paddles
+    // Doesn't reset the left paddle if it is singleplayer
     private void reset() {
+        if (ball.getPosition().getX() <= 0) { Game.incrementRightScore(); } 
+        else { Game.incrementLeftScore(); }
+        
         ball.setPosition(Display.getBallDefault());
         ballSpeedX = 10;
         ballSpeedY = 10;
 
-        leftPaddle.setPosition(Display.getLeftPaddleDefault());
+        if (!Menu.isSinglePlayer()) leftPaddle.setPosition(Display.getLeftPaddleDefault());
         rightPaddle.setPosition(Display.getRightPaddleDefault());
+
+        if (Game.getLeftScore() > 10 || Game.getRightScore() > 10) { Display.reset(); }
     }
 }

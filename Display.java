@@ -9,17 +9,27 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class Display extends JPanel {
+    
+    // Default positions for paddles and ball
     private static Point leftPaddleDefault, rightPaddleDefault, ballDefault;
     private static JFrame frame;
     private static int width, height;
 
+    // Paddle and ball objects
     private Paddle leftPaddle, rightPaddle;
     private Ball ball;
 
+    // Internal classes and Timer class, allowing for I/O and game tracking
     private GameLoop gameLoop;
+    private Game game;
     private Input input;
-    private Timer t;
-    
+    private static Timer t;
+
+    /*
+        Constructor for the Display class that initializes the frame and all drawable components.
+        It sets the paddles and ball to their default positions on screen and starts the timer for the main game loop.
+        Sets the left paddle to be a wall if singleplayer was selected.
+    */
     public Display() {
         frame = new JFrame("Pong Game");
         frame.setExtendedState(frame.MAXIMIZED_BOTH);
@@ -36,17 +46,19 @@ public class Display extends JPanel {
         rightPaddleDefault = new Point(width - 70, height / 2 - 50);
         ballDefault = new Point(width / 2 - 10, height / 2 - 10);
 
-        leftPaddle = new Paddle(new Point(leftPaddleDefault.getX(), leftPaddleDefault.getY()), 12, 150);
+        leftPaddle = new Paddle(new Point(leftPaddleDefault.getX(), Menu.isSinglePlayer() ? 0 : leftPaddleDefault.getY()), 12, Menu.isSinglePlayer() ? height : 150);
         rightPaddle = new Paddle(new Point(rightPaddleDefault.getX(), rightPaddleDefault.getY()), 12, 150);
         ball = new Ball(new Point(ballDefault.getX(), ballDefault.getY()), 20);
         gameLoop = new GameLoop(new Physics(leftPaddle, rightPaddle, ball));
 
         input = new Input();
+        game = new Game();
 
-        t = new Timer(8, gameLoop);
+        t = new Timer(4, gameLoop);
         t.start();
     }
 
+    // Getters for the defaults and frame dimensions
     public static Point getLeftPaddleDefault() {
         return leftPaddleDefault;
     }
@@ -63,21 +75,33 @@ public class Display extends JPanel {
         return width;
     }
 
+    // Stops the game at victory and opens the menu again
+    public static void reset() {
+        frame.setVisible(false);
+        frame.dispose();
+        t.stop();
+        new Menu();
+    }
+
+    // Paints the paddles, ball, and score onto the screen
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         leftPaddle.paintComponent(g);
         rightPaddle.paintComponent(g);
         ball.paintComponent(g);
+        game.paintComponent(g);
     }
 
-    public class GameLoop implements ActionListener {
+    // Internal class using the Timer and ActionListener to update the physics and repaint every frame
+    private class GameLoop implements ActionListener {
         private Physics physics;
 
         public GameLoop(Physics physics) {
             this.physics = physics;
         }
 
+        // Main game loop that updates every timer tick
         @Override
         public void actionPerformed(ActionEvent e) {
             physics.update();
@@ -85,14 +109,18 @@ public class Display extends JPanel {
         }
     }
 
-    public class Input implements KeyListener {
+    // Internal class to handle the input from the keyboard to move the paddles
+    private class Input implements KeyListener {
         private Physics physics;
         
+        // Adds a KeyListener to the frame
         public Input() {
             frame.addKeyListener(this);
             this.physics = gameLoop.physics;
         }
         
+        // Implements KeyListener and moves the left paddle with W and S, and moves the right paddle with UP and DOWN
+        // Restricts their movement within bounds
         @Override
         public void keyTyped(KeyEvent e) {}
         @Override
